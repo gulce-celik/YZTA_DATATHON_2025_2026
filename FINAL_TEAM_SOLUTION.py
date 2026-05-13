@@ -146,9 +146,7 @@ import gc
 
 warnings.filterwarnings('ignore')
 
-print("=== 🚀 NİHAİ TAKIM İTTİFAK SENTEZİ (FRANKENSTEIN: ORİJİNAL VERİ + OPTUNA PARAMETRELERİ) 🚀 ===")
-
-print("[-] FAZ 1: Veriler okunuyor ve ayrıştırılıyor...")
+print("[-] FAZ 1: Veriler okunuyor ve ayrıştırılıyor.")
 train = pd.read_csv('train.csv')
 test = pd.read_csv('test_x.csv')
 
@@ -161,7 +159,7 @@ X_test_raw = test.drop(['id'], axis=1)
 
 LOWER_BOUND = y_train_target.quantile(0.0005)
 UPPER_BOUND = y_train_target.quantile(0.9995)
-print("[-] FAZ 1.5: Metinler ASCII formatında temizleniyor ve kırpılıyor...")
+print("[-] FAZ 1.5: Metinler ASCII formatında temizleniyor ve kırpılıyor")
 
 tr_harfler = "çğıöşü"
 en_harfler = "cgiosu"
