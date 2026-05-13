@@ -1,6 +1,6 @@
 https://colab.research.google.com/drive/13jopU0hgnCWTXHgo4-tsd-KYkpAOGHwx?usp=sharing
 
-# DATATHON Team 106
+# YZTA — DATATHON Team 106
 
 **YZTA Datathon 2025–2026** — regression solution for predicting cognitive performance (**`bilissel_performans_skoru`**) from sleep, lifestyle, and demographic features.
 
@@ -75,4 +75,4 @@ Competition datasets are **not** bundled here; obtain `train.csv` and `test_x.cs
 
 ---
 
-*DATATHON Team 106 — YZTA 2025–2026.*
+*YZTA — DATATHON Team 106 — 2025–2026.*
