@@ -15,19 +15,14 @@ train = pd.read_csv(DATA_DIR / "train.csv")
 test = pd.read_csv(DATA_DIR / "test_x.csv")
 print(f"Train {train.shape} | Test {test.shape}\n")
 
-# --- Temel tanı ---
 df = train.copy()
 feat = df.drop(columns=["id"], errors="ignore")
 print(TARGET, "özeti:")
-print(feat[[TARGET]].describe().T) # =============================================================================
-# 1) EKSİKLİK
-# =============================================================================
+print(feat[[TARGET]].describe().T)
 miss = feat.isna().mean().sort_values(ascending=False) * 100
 miss = miss[miss > 0]
 print("\n=== Eksiklik (ilk 15 sütun, %) ===")
-print(miss.head(15).to_string())# =============================================================================
-# 2) HEDEP DAĞILIMI
-# =============================================================================
+print(miss.head(15).to_string())
 fig, ax = plt.subplots(1, 2, figsize=(12, 4))
 sns.histplot(df[TARGET], kde=True, ax=ax[0], color="steelblue")
 ax[0].set_title("Hedef histogram + KDE")
@@ -37,9 +32,7 @@ plt.tight_layout()
 plt.show()
 
 ys = df[TARGET]
-print(f"\nUç dilim yüzdesi (y≤1 veya y≥9): {( (ys<=1)|(ys>=9) ).mean()*100:.2f}%")# =============================================================================
-# 3) PEARSON: TÜM SAYISALLAR vs Hedef (sıralı tablo + üstleri bar)
-# =============================================================================
+print(f"\nUç dilim yüzdesi (y≤1 veya y≥9): {( (ys<=1)|(ys>=9) ).mean()*100:.2f}%")
 num_cols = feat.select_dtypes(include=[np.number]).columns.drop(TARGET, errors="ignore")
 pearson = feat[num_cols.tolist() + [TARGET]].corr(numeric_only=True)[TARGET].drop(TARGET).sort_values(
     ascending=False
@@ -66,9 +59,7 @@ plt.axvline(0, color="gray", lw=1)
 plt.title("Hedefle Pearson | en güçlü 22 özellik (negatif uç)")
 plt.xlabel("Pearson")
 plt.tight_layout()
-plt.show()# =============================================================================
-# 4) KORELASYON MATRİSİ (ISI HARİTASI) — seçilmiş sütunlar (okunaklı kalır)
-# =============================================================================
+plt.show()
 heatmap_cols = [
     TARGET,
     "yas",
@@ -89,9 +80,7 @@ plt.figure(figsize=(9, 7))
 sns.heatmap(cm, annot=True, fmt=".2f", cmap="RdBu_r", center=0, square=False)
 plt.title("Seçilmiş sayısallar + hedef Pearson matrisi")
 plt.tight_layout()
-plt.show()# =============================================================================
-# 5) SPEARMAN (monoton ilişki) — büyük veride hız için alt örnekleme
-# =============================================================================
+plt.show()
 sample_n = min(15000, len(df))
 spl = df.sample(sample_n, random_state=RNG)
 spear = spl[num_cols.tolist() + [TARGET]].corr(method="spearman", numeric_only=True)[TARGET].drop(
@@ -101,9 +90,7 @@ spear = spl[num_cols.tolist() + [TARGET]].corr(method="spearman", numeric_only=T
 print("\n=== Spearman (hedef ile, n=", sample_n, ") — üst / alt 10 ===")
 print(spear.head(10).round(4).to_string())
 print()
-print(spear.tail(10).round(4).to_string())# =============================================================================
-# 6) Scatter: hedef ile birkaç güçlü değişken (alt örneklemede çizilir)
-# =============================================================================
+print(spear.tail(10).round(4).to_string())
 plot_xy = [(c,) for c in ["stres_skoru", "derin_uyku_yuzdesi", "rem_yuzdesi"]]
 plot_xy = [c[0] for c in plot_xy if c[0] in df.columns][:3]
 
@@ -117,9 +104,7 @@ for ax, col in zip(axes, plot_xy):
     ax.set_ylabel(TARGET)
     ax.set_title(f"{col} vs hedef")
 plt.tight_layout()
-plt.show()# =============================================================================
-# 7) Kategorik karmaşıklık (hangi nominal alan daha “geniş”?
-# =============================================================================
+plt.show()
 cats = ["meslek", "ulke", "kronotip", "ruh_sagligi_durumu", "cinsiyet", "mevsim", "gun_tipi"]
 cats = [c for c in cats if c in df.columns]
 card = pd.DataFrame(
@@ -163,9 +148,6 @@ warnings.filterwarnings('ignore')
 
 print("=== 🚀 NİHAİ TAKIM İTTİFAK SENTEZİ (FRANKENSTEIN: ORİJİNAL VERİ + OPTUNA PARAMETRELERİ) 🚀 ===")
 
-# ==============================================================================
-# 1. VERİ YÜKLEME VE HEDEF GÜVENCESİ
-# ==============================================================================
 print("[-] FAZ 1: Veriler okunuyor ve ayrıştırılıyor...")
 train = pd.read_csv('train.csv')
 test = pd.read_csv('test_x.csv')
@@ -178,9 +160,7 @@ X_train_raw = train.drop(['id', TARGET], axis=1)
 X_test_raw = test.drop(['id'], axis=1)
 
 LOWER_BOUND = y_train_target.quantile(0.0005)
-UPPER_BOUND = y_train_target.quantile(0.9995)# ==============================================================================
-# 1.5 KUSURSUZ METİN TEMİZLİĞİ VE GÜVENLİK
-# ==============================================================================
+UPPER_BOUND = y_train_target.quantile(0.9995)
 print("[-] FAZ 1.5: Metinler ASCII formatında temizleniyor ve kırpılıyor...")
 
 tr_harfler = "çğıöşü"
@@ -207,9 +187,7 @@ for df in [X_train_raw, X_test_raw]:
 
     if 'gunluk_calisma_saati' in df.columns: df['gunluk_calisma_saati'] = df['gunluk_calisma_saati'].clip(lower=0, upper=20)
     if 'dinlenik_nabiz_bpm' in df.columns: df['dinlenik_nabiz_bpm'] = df['dinlenik_nabiz_bpm'].clip(lower=30, upper=150)
-    if 'yas' in df.columns: df['yas'] = df['yas'].clip(lower=16, upper=90)# ==============================================================================
-# 2. AKILLI EKSİK VERİ DOLDURMA (MICE & SIMPLE IMPUTATION)
-# ==============================================================================
+    if 'yas' in df.columns: df['yas'] = df['yas'].clip(lower=16, upper=90)
 print("[-] FAZ 2: Eksiklik Odaklı Hibrit MICE Imputation uygulanıyor...")
 
 num_cols = X_train_raw.select_dtypes(include=[np.number]).columns.tolist()
@@ -236,9 +214,7 @@ for col in num_cols:
 
 for col in cat_cols:
     X_train_clean[col] = X_train_clean[col].astype(str)
-    X_test_clean[col] = X_test_clean[col].astype(str)# ==============================================================================
-# 3. KUSURSUZ ÖZELLİK MÜHENDİSLİĞİ (TÜM TAKIMIN BİRLEŞİMİ)
-# ==============================================================================
+    X_test_clean[col] = X_test_clean[col].astype(str)
 print("[-] FAZ 3: Üç Arkadaşın Tüm Altın Özellikleri Sentezleniyor...")
 
 def add_validated_features(df_train, df_test):
@@ -266,9 +242,6 @@ def add_validated_features(df_train, df_test):
     return res_train, res_test
 
 X_train_feat, X_test_feat = add_validated_features(X_train_clean, X_test_clean)
-# DİKKAT: Faz 3.5 İptal Edildi. Verinin Orijinal Zenginliği Korunuyor.# ==============================================================================
-# 4. KARDİNALİTE YÖNETİMİ: OOF TARGET ENCODING & SCALING
-# ==============================================================================
 print("[-] FAZ 4: Sızıntısız OOF Target Encoding ve Standartlaştırma...")
 
 current_num_cols = X_train_feat.select_dtypes(include=[np.number]).columns.tolist()
@@ -316,17 +289,13 @@ if target_enc_cols:
 
 if "meslek_target_enc" in X_train_encoded.columns:
     X_train_encoded["te_meslek_x_stres"] = X_train_encoded["meslek_target_enc"] * X_train_encoded["stres_skoru"]
-    X_test_encoded["te_meslek_x_stres"] = X_test_encoded["meslek_target_enc"] * X_test_encoded["stres_skoru"]# ==============================================================================
-# 5. YARI-DENETİMLİ PSEUDO-LABELING HAVUZU
-# ==============================================================================
+    X_test_encoded["te_meslek_x_stres"] = X_test_encoded["meslek_target_enc"] * X_test_encoded["stres_skoru"]
 print("[-] FAZ 5: Pseudo-Labeling test cevapları tahmin ediliyor...")
 cat_indices = [X_train_feat.columns.get_loc(col) for col in current_cat_cols]
 
 m_pre = CatBoostRegressor(n_estimators=1000, cat_features=cat_indices, verbose=False, random_state=42)
 m_pre.fit(X_train_feat, y_train_target)
-pseudo_y = m_pre.predict(X_test_feat)# ==============================================================================
-# 6. 10-FOLD DÖRTLÜ MOTOR (OPTUNA PARAMETRELERİ NAKLEDİLDİ)
-# ==============================================================================
+pseudo_y = m_pre.predict(X_test_feat)
 print("\n=== FAZ 6: 10-Fold Dörtlü Motor Çapraz Doğrulaması Başladı ===")
 
 oof_cat, oof_xgb, oof_lgb, oof_knn = (np.zeros(len(X_train_feat)) for _ in range(4))
@@ -337,7 +306,6 @@ for fold, (train_idx, val_idx) in enumerate(kf.split(X_train_feat, y_train_targe
     X_fold_train_enc = pd.concat([X_train_encoded.iloc[train_idx], X_test_encoded], axis=0)
     y_fold_train = pd.concat([y_train_target.iloc[train_idx], pd.Series(pseudo_y)], axis=0)
 
-    # 1. CatBoost (Optuna Parametreleri)
     m_cat = CatBoostRegressor(
         iterations=1113,
         learning_rate=0.04832,
@@ -351,13 +319,11 @@ for fold, (train_idx, val_idx) in enumerate(kf.split(X_train_feat, y_train_targe
     oof_cat[val_idx] = m_cat.predict(X_train_feat.iloc[val_idx])
     test_cat += m_cat.predict(X_test_feat) / kf.n_splits
 
-    # 2. XGBoost (Orijinal Ayarlar)
     m_xgb = XGBRegressor(n_estimators=1500, learning_rate=0.03, max_depth=6, random_state=42, n_jobs=-1)
     m_xgb.fit(X_fold_train_enc, y_fold_train)
     oof_xgb[val_idx] = m_xgb.predict(X_train_encoded.iloc[val_idx])
     test_xgb += m_xgb.predict(X_test_encoded) / kf.n_splits
 
-    # 3. LightGBM (Optuna Parametreleri)
     m_lgb = LGBMRegressor(
         n_estimators=1064,
         learning_rate=0.02164,
@@ -372,7 +338,6 @@ for fold, (train_idx, val_idx) in enumerate(kf.split(X_train_feat, y_train_targe
     oof_lgb[val_idx] = m_lgb.predict(X_train_encoded.iloc[val_idx])
     test_lgb += m_lgb.predict(X_test_encoded) / kf.n_splits
 
-    # 4. KNN (Orijinal Ayarlar)
     m_knn = KNeighborsRegressor(n_neighbors=15, weights='distance', n_jobs=-1)
     m_knn.fit(X_train_encoded.iloc[train_idx], y_train_target.iloc[train_idx])
     oof_knn[val_idx] = m_knn.predict(X_train_encoded.iloc[val_idx])
@@ -381,9 +346,7 @@ for fold, (train_idx, val_idx) in enumerate(kf.split(X_train_feat, y_train_targe
     print(f" ✔ Fold {fold + 1}/10 başarıyla tamamlandı.")
 
     del m_cat, m_xgb, m_lgb, m_knn
-    gc.collect()# ==============================================================================
-# 7. RIDGE META-MODEL HARMANLAMASI VE KALİBRASYON (YUVARLAMA YOK)
-# ==============================================================================
+    gc.collect()
 print("\n=== FAZ 7: Ridge Meta-Model Optimizasyonu ve Teslimat ===")
 
 stacked_train = np.column_stack((oof_cat, oof_xgb, oof_lgb, oof_knn))
@@ -403,7 +366,7 @@ final_sub_preds = meta_model.predict(stacked_test)
 final_sub_preds = final_sub_preds - (final_sub_preds.mean() - y_train_target.mean())
 final_sub_preds = np.clip(final_sub_preds, LOWER_BOUND, UPPER_BOUND)
 
-# DİKKAT: YUVARLAMA (2 DECIMAL) İPTAL EDİLDİ - SAF DEĞERLER KORUNUYOR
+# Submission CSV uses full float predictions (no rounding to 2 decimals).
 submission = pd.DataFrame({'id': test_ids, TARGET: final_sub_preds})
 submission.to_csv('TEAM_VOLTRAN_FRANKENSTEIN_OPTUNA.csv', index=False)
 

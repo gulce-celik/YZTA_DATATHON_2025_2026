@@ -1,3 +1,5 @@
+## Google Colab — runnable notebook (full pipeline)
+
 https://colab.research.google.com/drive/13jopU0hgnCWTXHgo4-tsd-KYkpAOGHwx?usp=sharing
 
 # YZTA — DATATHON Team 106
@@ -19,7 +21,7 @@ This repository ships our **final submission pipeline**: exploratory analysis, f
 
 ## Quick start — Google Colab
 
-1. Open the **[Colab notebook](https://colab.research.google.com/drive/13jopU0hgnCWTXHgo4-tsd-KYkpAOGHwx?usp=sharing)** (same link as the first line of this README).
+1. Open the **[Colab notebook](https://colab.research.google.com/drive/13jopU0hgnCWTXHgo4-tsd-KYkpAOGHwx?usp=sharing)** (same URL as under the **Google Colab** heading at the top of this README).
 2. Upload **`train.csv`** and **`test_x.csv`** (competition files) into the Colab environment (e.g. `/content` if you use the default paths in the EDA section).
 3. Run all cells **from top to bottom**. The first part produces EDA figures; the second part trains models and writes the submission file.
 
