@@ -368,7 +368,7 @@ final_sub_preds = np.clip(final_sub_preds, LOWER_BOUND, UPPER_BOUND)
 
 # Submission CSV uses full float predictions (no rounding to 2 decimals).
 submission = pd.DataFrame({'id': test_ids, TARGET: final_sub_preds})
-submission.to_csv('TEAM_VOLTRAN_FRANKENSTEIN_OPTUNA.csv', index=False)
+submission.to_csv('Kaggle106.csv', index=False)
 
-print("\n🏆 DOSYA HAZIR! 'TEAM_VOLTRAN_FRANKENSTEIN_OPTUNA.csv' diske yazıldı.")
+print("\n🏆 DOSYA HAZIR!")
 print("=" * 55)
