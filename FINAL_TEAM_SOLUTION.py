@@ -358,7 +358,7 @@ meta_model.fit(stacked_train, y_train_target)
 oof_final_preds = meta_model.predict(stacked_train)
 final_rmse = np.sqrt(mean_squared_error(y_train_target, oof_final_preds))
 
-print(f"\n>>> DÜRÜST, SIZINTISIZ VE OPTUNA NAKİLLİ NİHAİ OOF RMSE: {final_rmse:.6f}")
+print(f"\n>>> OOF RMSE: {final_rmse:.6f}")
 print("Meta-Model Motor Ağırlıkları (CatBoost, XGBoost, LightGBM, KNN):")
 print(np.round(meta_model.coef_, 4))
 
@@ -370,5 +370,5 @@ final_sub_preds = np.clip(final_sub_preds, LOWER_BOUND, UPPER_BOUND)
 submission = pd.DataFrame({'id': test_ids, TARGET: final_sub_preds})
 submission.to_csv('Kaggle106.csv', index=False)
 
-print("\n🏆 DOSYA HAZIR!")
+print("\nDOSYA HAZIR!")
 print("=" * 55)
