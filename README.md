@@ -10,10 +10,10 @@ This repository ships our **final submission pipeline**: exploratory analysis, f
 
 | Name | Role |
 |------|------|
-| **Gülce Çelik** | Team member |
-| **Gamze Akemoğlu** | Team member |
-| **Mehmet Vural** | Team member |
 | **Anıl Dinç** | Team member |
+| **Gamze Akemoğlu** | Team member |
+| **Gülce Çelik** | Team member |
+| **Mehmet Vural** | Team member |
 
 ---
 
