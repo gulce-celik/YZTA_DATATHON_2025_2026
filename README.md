@@ -55,7 +55,7 @@ pip install xgboost matplotlib seaborn lightgbm catboost pandas scikit-learn
 6. **Pseudo-labeling** — A preliminary **CatBoost** model generates pseudo-targets on the test set to augment training folds.
 7. **Stacking** — **10-fold** out-of-fold predictions from **CatBoost**, **XGBoost**, **LightGBM**, and **KNN**; a **Ridge** meta-model blends them. Final predictions are mean-calibrated and clipped using train quantile bounds.
 
-Output file: **`TEAM_VOLTRAN_FRANKENSTEIN_OPTUNA.csv`** (submission-ready `id` + target column).
+Output file: **`Kaggle106.csv`** (submission-ready `id` + target column).
 
 ---
 
